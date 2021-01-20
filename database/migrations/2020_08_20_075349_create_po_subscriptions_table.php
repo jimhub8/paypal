@@ -22,7 +22,7 @@ class CreatePoSubscriptionsTable extends Migration
             $table->text('features')->nullable();
             $table->string('subscription_id')->nullable();
             $table->text('paypal_data')->nullable();
-            $table->status('status')->default('Created');
+            $table->string('status')->default('Created');
             $table->timestamps();
         });
     }
