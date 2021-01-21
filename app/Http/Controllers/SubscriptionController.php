@@ -8,6 +8,7 @@ use App\Paypal\PaypalAgreement;
 use App\Paypal\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SubscriptionController extends Controller
 {
@@ -104,6 +105,11 @@ class SubscriptionController extends Controller
 
     public function webhook(Request $request)
     {
+        $data = [];
+        Mail::send('emails.welcome', $data, function ($message) {
+            $message->from('us@example.com', 'Laravel');
+            $message->to('foo@example.com');
+        });
         Log::debug('**********************************');
         Log::debug('**********************************');
         Log::debug('**********************************');
