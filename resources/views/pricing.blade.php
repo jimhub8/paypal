@@ -19,8 +19,8 @@
                         @foreach ($subscriptions as $key => $subscription)
                         <tr>
                             <th scope="row">{{ $key + 1 }}</th>
-                            <td>{{ $subscription->subscription }}</td>
-                            <td>{{ $subscription->subscription_amount }}</td>
+                            <td>{{ $subscription->plan }}</td>
+                            <td>{{ $subscription->amount }}</td>
                             <td>
                                 <form action="{{ route('create-agreement', $subscription->subscription_id) }}" method="POST">
                                     @csrf

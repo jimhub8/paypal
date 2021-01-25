@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Paypal;
+namespace App\Payapi;
 
 use App\Models\Plan as ModelsPlan;
-use App\Models\PoSubscription;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use PayPal\Api\ChargeModel;
 use PayPal\Api\Currency;
@@ -22,42 +20,9 @@ class SubscriptionPlan extends Paypal
     public function create($data)
     {
         try {
-            $plan = $this->Plan($data);
+            $url = 'https://api-m.sandbox.paypal.com/v1/payments/billing-plans';
 
-            $paymentDefinition = $this->PaymentDefinition($data);
-
-            $chargeModel = $this->chargeModel();
-
-            $paymentDefinition->setChargeModels(array($chargeModel));
-
-            $merchantPreferences = $this->merchantPreferences();
-
-            $plan->setPaymentDefinitions(array($paymentDefinition));
-            $plan->setMerchantPreferences($merchantPreferences);
-            // dd($this->apiContext, $patchRequest);
-
-            $output = $plan->create($this->apiContext);
-
-            $paypal_res = json_decode($output);
-
-            $subscription = new ModelsPlan;
-            $subscription->create_plan($data, $paypal_res);
-
-            // dd($paypal_res->payment_definitions[0]->id);
-            // $subscription = PoSubscription::updateOrCreate(
-            //     [
-            //         'subscription' => $data['subscription']
-            //     ],
-            //     [
-            //         'user_id' => 1,
-            //         'subscription_description' => $data['subscription_description'],
-            //         // 'features' => $data['features'],
-            //         'subscription_amount' => $data['subscription_amount'],
-            //         'subscription_id' => $paypal_res->id,
-            //         'paypal_data' => $paypal_res
-            //     ]
-            // );
-            dd($paypal_res);
+            // dd($paypal_res);
         } catch (\Exception $e) {
             Log::debug($e);
             dd($e);

@@ -42,5 +42,11 @@ Route::get('plan/{id}/deactivate', 'SubscriptionController@deactivatePlan');
 Route::post('plan/{id}/agreement/create', 'SubscriptionController@createAgreement')->name('create-agreement');
 Route::get('execute-agreement/{success}', 'SubscriptionController@executeAgreement');
 
+Route::get('agreement_details', 'SubscriptionController@agreement_details');
 
+
+
+
+// Upgrade & Downgrade
+Route::get('upgrade', 'SubscriptionController@upgrade');
 

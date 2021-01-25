@@ -11,18 +11,21 @@
                             <th scope="col">#</th>
                             <th scope="col">Subscription</th>
                             <th scope="col">Subscription amount</th>
-                            <th scope="col">Subscription id</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Created at</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($subscriptions as $key => $subscription)
                         <tr>
                             <th scope="row">{{ $key + 1 }}</th>
-                            <td>{{ $subscription->subscription }}</td>
-                            <td>{{ $subscription->subscription_amount }}</td>
-                            <td><a href="plan/{{ $subscription->subscription_id }}/activate" target="_blank">{{ $subscription->subscription_id }}</a></td>
+                            <td>{{ $subscription->plan }}</td>
+                            <td>${{ $subscription->amount }}</td>
+                            <td>{{ $subscription->status }}</td>
                             <td>{{ $subscription->created_at }}</td>
+                            <td><a href="plan/{{ $subscription->subscription_id }}/activate" target="_blank">Activate</a></td>
+                            <td><a href="plan/{{ $subscription->subscription_id }}/deactivate" target="_blank">Deactivate</a></td>
                         </tr>
                         @endforeach
 
@@ -33,7 +36,7 @@
                     @csrf
                     <div>
                         <label for="">Subscription Name</label>
-                        <input placeholder="2000" name="subscription" class="form-control">
+                        <input placeholder="Plan" name="subscription" class="form-control">
 
                     </div>
                     <div>
