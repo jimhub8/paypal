@@ -25,6 +25,7 @@ class CreateSubscribersTable extends Migration
 
             $table->boolean('at_trial')->default(true);
 
+            $table->string('agreement_id')->nullable();
 
             $table->string('plan_id')->nullable();
             $table->datetime('trial_ends')->nullable();

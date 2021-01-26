@@ -22,6 +22,8 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('subscription_adddays')->nullable();
             $table->boolean('expired')->nullable();
             $table->string('plan_id')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('billing_agreement_id')->nullable();
             $table->timestamps();
         });
     }

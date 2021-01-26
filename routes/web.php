@@ -49,4 +49,6 @@ Route::get('agreement_details', 'SubscriptionController@agreement_details');
 
 // Upgrade & Downgrade
 Route::get('upgrade', 'SubscriptionController@upgrade');
+Route::get('subscription_transaction', 'TransactionController@subscription_transaction');
 
+Route::get('token', 'TransactionController@token');

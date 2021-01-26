@@ -190,50 +190,21 @@ class PaypalAgreement extends Paypal
     public function token()
     {
         try {
-            // $client = new Client();
-            // $url = 'https://api-m.sandbox.paypal.com/v1/oauth2/token';
-            // $response = $client->request('POST', $url, [
-            //     'headers' => [
-            //         'Accept' => 'application/json',
-            //         'Content-Type' => 'application/json',
-            //         'Authorization' => env('PAYPAL_TOKEN')
-            //     ],
-            //     'form_params' => [
-            //         "plan_id" => "P-5ML4271244454362WXNWU5NQ"
-            //     ],
-            // ]);
+            $client = new Client();
+            $token = 'Basic QWRyZFhBQjdPTHBaSlhEQm5nZ2c0NkdqWUxCV2Q5elA3Uy1QWFlYYlVFR1JaVG1EUE9OeVpIaDd4TndWdHVrczJTUEV2bGt2c3Q1OUQwM2Y6RUZBT0VkSlJ1T0lyRTNIY0xLMl9fMU1CRkN1N19XWS1OZ3NCeTdFVTd0N2FlZERXNFNWcWp6TFB5ZlBKWE56VV9nUjdGVUtONnpPOXRiX3U=';
+            $url = 'https://api-m.sandbox.paypal.com/v1/oauth2/token';
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Authorization' => $token
+                ],
+                'form_data' => [
+                    'grant_type' => 'client_credentials'
+                ]
+            ]);
 
-            $data = [
-                "plan_id" => "P-5ML4271244454362WXNWU5NQ"
-            ];
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api-m.sandbox.paypal.com/v1/billing/subscriptions/I-BW452GLLEP1G/revise",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30000,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => json_encode($data),
-                CURLOPT_HTTPHEADER => array(
-                    // Set here requred headers
-                    // "accept: */*",
-                    // "accept-language: en-US,en;q=0.8",
-                    'Accept' => 'application/json',
-                    "content-type: application/json",
-                    'Authorization' => env('PAYPAL_TOKEN')
-                ),
-            ));
-
-
-
-            // curl -v -X POST https://api-m.sandbox.paypal.com/v1/billing/subscriptions/I-BW452GLLEP1G/revise
-            //     -H "Content-Type: application/json" \
-            //     -H "Authorization: Bearer <Access-Token>" \
-            //     -d '{
-            //     "plan_id": "P-5ML4271244454362WXNWU5NQ"
-            //     }'
+            return $response = $response->getBody()->getContents();
+            dd($response);
         } catch (\Exception $e) {
             dd($e);
         }

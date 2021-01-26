@@ -1,47 +1,33 @@
 <?php
-namespace App\Paypal;
+
+namespace App\Http\Controllers;
 
 use App\Models\Token;
 use GuzzleHttp\Client;
-use PayPal\Api\Amount;
-use PayPal\Api\Details;
+use Illuminate\Http\Request;
 
-class Paypal
+class TransactionController extends Controller
 {
-    protected $apiContext;
-
-    public function __construct()
+    public function subscription_transaction()
     {
-        $this->apiContext = new \PayPal\Rest\ApiContext(
-            new \PayPal\Auth\OAuthTokenCredential(
-                config('services.paypal.id'), // client id
-                config('services.paypal.secret')
-            )
-        );
-    }
+        try {
+            $client = new Client();
+            $token = 'Bearer A21AAIqXMqHnEsIB0YnluAPQ_1YWu6JKqSI_-eiXvPDatcHGfGzdYQtfkFgfefzxH6z2h9R18l0nh5JKpN7H2YQ3cHKHviCrg';
+            $url = 'https://api-m.sandbox.paypal.com/v1/billing/subscriptions/I-DE41HL5XBL16/transactions?start_time=2018-01-21T07:50:20.940Z&end_time=2021-01-26T07:50:20.940Z';
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => $token
+                ]
+            ]);
 
-    /**
-     * @return Details
-     */
-    protected function details(): Details
-    {
-        $details = new Details();
-        $details->setShipping(1.2)
-            ->setTax(1.3)
-            ->setSubtotal(17.50);
-        return $details;
-    }
+            return $response = $response->getBody()->getContents();
+            dd($response);
+        } catch (\Exception $e) {
+            dd($e);
+        }
 
-    /**
-     * @return Amount
-     */
-    protected function amount(): Amount
-    {
-        $amount = new Amount();
-        $amount->setCurrency('USD');
-        $amount->setTotal(20);
-        $amount->setDetails($this->details());
-        return $amount;
     }
 
     public function token()
@@ -61,7 +47,7 @@ class Paypal
             ]);
 
             return $response = $response->getBody()->getContents();
-            $token = new Token();
+            $token = new Token;
             $token->token_type = $response['token_type'];
             $token->access_token = $response['access_token'];
             $token->expires_in = $response['expires_in'];

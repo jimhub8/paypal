@@ -159,6 +159,10 @@ class SubscriptionController extends Controller
         } elseif($request->event_type == 'BILLING.SUBSCRIPTION.EXPIRED') {
             $subscriber = new Subscription();
             $subscriber->expired();
+        }elseif($request->event_type == 'PAYMENT.SALE.COMPLETED') {
+            $subscriber = new Subscription();
+            $subscriber->renew($request->all());
+            // $subscriber->expired();
         }
         return ;
 
@@ -166,32 +170,52 @@ class SubscriptionController extends Controller
     public function webhook_index(Request $request)
     {
        return $model = ModelsLog::latest()->get('logs');
-    //    $model = ModelsLog::latest()->first('logs');
+       $model = ModelsLog::latest()->first('logs');
+
+
+
+
         $data = (($model->logs));
 
         // return $data['resource']['subscriber']['email_address'];
         // dd($data);
 
-        $plan = Plan::where('plan_id', $data['resource']['plan_id'])->first();
+        // $plan = Plan::where('plan_id', $data['resource']['plan_id'])->first();
         // $plan = Plan::first();
 
-        $email = $data['resource']['subscriber']['email_address'];
+        // $email = $data['resource']['subscriber']['email_address'];
 
-        $subscriber = Subscriber::where('email', $email)->first();
-        // $subscriber = Subscriber::where('tenant_id', 'foo')->first();
-        $subscriber->at_trial = false;
+        $billing_agreement_id = (array_key_exists('billing_agreement_id', $data['resource'])) ? $data['resource']['billing_agreement_id'] : '2222222';
+
+
+        $subscriber = Subscriber::where('agreement_id', $billing_agreement_id)->first();
+        // $subscriber = Subscriber::first();
+        // $subscriber->tenant_id = $data->tenant_id;
         $subscriber->status = true;
-        $subscriber->email = $email;
         $subscriber->platform = 'Paypal';
-        $subscriber->plan = $data['resource']['plan_id'];
-        $subscriber->plan_id = 1;
-        // $subscriber->plan_id = $plan->id;
+        // $subscriber->plan = $data->plan;
+        // $subscriber->plan = $data['resource']['plan_id'];
+        // $subscriber->agreement_id = $billing_agreement_id;
         // $subscriber->trial_ends = $data->trial_ends;
-        $subscriber->subscription_start = now();
-        $subscriber->subscription_expire = Carbon::today()->addDays(30);
+        // $subscriber->subscription_start = $data->subscription_start;
+        $subscriber->subscription_expire = Carbon::parse($subscriber->subscription_expire)->addDays(30);
         $subscriber->subscription_adddays = 30;
         $subscriber->expired = false;
         $subscriber->save();
+
+
+        $subscription = new Subscription();
+        $subscription->subscriber_id = $subscriber->id;
+        $subscription->billing_agreement_id = $billing_agreement_id;
+        // $subscription->amount = $data['amount']['total'];
+        // $subscription->trial_ends = $data->resource;
+        $subscription->subscription_start = now();
+        $subscription->subscription_expire = Carbon::today()->addDays(30);
+        $subscription->subscription_adddays = 30;
+        $subscription->expired = false;
+        $subscription->save();
+
+        return $subscription;
 
 
 
